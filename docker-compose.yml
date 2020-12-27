@@ -1,0 +1,28 @@
+version: "2"
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:3.7-alpine
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+ 
+  weather-data-producer:
+    image: weather-data-producer
+    ports:
+      - "8081:8081"
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    network_mode: "host"
+          
+  weather-data-consumer:
+    image: weather-data-consumer
+    ports:
+      - "8080:8080"
+    restart: on-failure
+    depends_on:
+      - weather-data-producer
+    network_mode: "host"
